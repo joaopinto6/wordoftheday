@@ -170,41 +170,55 @@ function setupSubscriptionForm() {
   const cancelBtn = document.getElementById('cancel-subscription');
   const form = document.getElementById('subscription-form');
   const messageEl = document.getElementById('subscription-message');
-  
-  // Toggle form visibility
-  subscriptionBtn.addEventListener('click', () => {
-    formContainer.classList.toggle('hidden');
+
+  // Close form if click is outside the subscription form container
+  function outsideClickHandler(e) {
+    if (!formContainer.contains(e.target) && e.target !== subscriptionBtn) {
+      formContainer.classList.add('hidden');
+      document.body.classList.remove('blurred');
+      document.removeEventListener('click', outsideClickHandler);
+      form.reset();
+      messageEl.className = 'subscription-message';
+      messageEl.textContent = '';
+    }
+  }
+
+  subscriptionBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (formContainer.classList.contains('hidden')) {
+      formContainer.classList.remove('hidden');
+      document.body.classList.add('blurred');
+      setTimeout(() => {
+        document.addEventListener('click', outsideClickHandler);
+      }, 0);
+    } else {
+      formContainer.classList.add('hidden');
+      document.body.classList.remove('blurred');
+      document.removeEventListener('click', outsideClickHandler);
+    }
   });
-  
-  // Close form
+
   cancelBtn.addEventListener('click', () => {
     formContainer.classList.add('hidden');
-    // Reset form
+    document.body.classList.remove('blurred');
+    document.removeEventListener('click', outsideClickHandler);
     form.reset();
     messageEl.className = 'subscription-message';
     messageEl.textContent = '';
   });
-  
-  // Handle form submission
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const email = document.getElementById('email').value.trim();
-    
-    // Simple client-side validation
     if (!email || !validateEmail(email)) {
       showMessage('Por favor, insira um endereço de e-mail válido.', 'error');
       return;
     }
-    
     try {
-      // Show loading state
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enviando...';
-      
-      // Submit email to API
       const response = await fetch('/.netlify/functions/submitEmail', {
         method: 'POST',
         headers: {
@@ -212,40 +226,34 @@ function setupSubscriptionForm() {
         },
         body: JSON.stringify({ email })
       });
-      
       const data = await response.json();
-      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to subscribe');
       }
-      
-      // Show success message
       showMessage('Email subscrito com sucesso!', 'success');
       form.reset();
-      
-      // Automatically hide the form after 3 seconds
       setTimeout(() => {
         formContainer.classList.add('hidden');
+        document.body.classList.remove('blurred');
+        document.removeEventListener('click', outsideClickHandler);
         messageEl.className = 'subscription-message';
         messageEl.textContent = '';
       }, 3000);
-      
     } catch (error) {
       console.error('Error submitting email:', error);
       showMessage(error.message || 'Ocorreu um erro. Por favor, tente novamente.', 'error');
     } finally {
-      // Restore button state
       const submitBtn = form.querySelector('button[type="submit"]');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Subscrever';
     }
   });
-  
+
   function showMessage(text, type) {
     messageEl.textContent = text;
     messageEl.className = `subscription-message ${type}`;
   }
-  
+
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);

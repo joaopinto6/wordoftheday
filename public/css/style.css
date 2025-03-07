@@ -439,3 +439,10 @@ footer {
     max-height: 120px;
   }
 }
+
+body.blurred header,
+body.blurred main,
+body.blurred footer {
+  filter: blur(6px);
+  transition: filter var(--transition-speed);
+}
