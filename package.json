@@ -1,0 +1,23 @@
+{
+  "name": "wordoftheday",
+  "version": "1.0.0",
+  "description": "A website that displays the word of the day from Priberam dictionary",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "netlify dev",
+    "build": "echo \"No build step needed\" && exit 0"
+  },
+  "keywords": ["dictionary", "word of the day", "portuguese"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "cheerio": "^1.0.0-rc.12",
+    "xml2js": "^0.6.2",
+    "@supabase/supabase-js": "^2.39.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.13.0"
+  }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palavra do Dia - Dicionário Priberam</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Palavra do Dia</h1>
+    <p class="subtitle">do Dicionário Priberam da Língua Portuguesa</p>
+  </header>
+
+  <main>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Carregando palavras...</p>
+    </div>
+
+    <div id="words-container" class="words-container">
+      <!-- Words will be dynamically inserted here -->
+    </div>
+
+    <template id="word-card-template">
+      <div class="word-card">
+        <div class="word-card-inner">
+          <div class="word-card-front">
+            <h2 class="word"></h2>
+            <p class="syllables"></p>
+            <p class="word-class"></p>
+            <p class="date"></p>
+            <div class="click-info">
+              <i class="fas fa-sync-alt"></i> Clique para mais detalhes
+            </div>
+          </div>
+          <div class="word-card-back">
+            <h3 class="word"></h3>
+            <p class="meaning"></p>
+            <div class="etymology-container">
+              <h4>Origem etimológica:</h4>
+              <p class="etymology"></p>
+            </div>
+            <a href="#" class="dictionary-link" target="_blank">Ver no dicionário</a>
+          </div>
+        </div>
+      </div>
+    </template>
+  </main>
+
+  <div class="subscription-container">
+    <button id="subscription-button" class="subscription-button">
+      <i class="far fa-envelope"></i>
+    </button>
+
+    <div id="subscription-form-container" class="subscription-form-container hidden">
+      <form id="subscription-form" class="subscription-form">
+        <h3>Receba a palavra do dia</h3>
+        <p>Inscreva-se para receber a palavra do dia diretamente no seu email</p>
+        
+        <div class="form-group">
+          <input type="email" id="email" name="email" placeholder="Seu endereço de email" required>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit">Subscrever</button>
+          <button type="button" id="cancel-subscription">Cancelar</button>
+        </div>
+        
+        <div id="subscription-message" class="subscription-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; <span id="current-year"></span> - Palavra do Dia</p>
+    <p>Conteúdo do <a href="https://dicionario.priberam.org/" target="_blank">Dicionário Priberam</a></p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
