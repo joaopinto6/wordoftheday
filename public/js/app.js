@@ -54,6 +54,7 @@ function createWordCard(wordData) {
   const dateEl = clone.querySelector('.date');
   const meaningEl = clone.querySelector('.meaning');
   const etymologyEl = clone.querySelector('.etymology');
+  const etymologyContainer = clone.querySelector('.etymology-container');
   const dictionaryLink = clone.querySelector('.dictionary-link');
   
   // Set data
@@ -66,7 +67,10 @@ function createWordCard(wordData) {
     syllablesEl.style.display = 'none';
   }
   
-  if (wordData.wordClass) {
+  // Handle word classes (both new array format and legacy single string format)
+  if (wordData.wordClasses && Array.isArray(wordData.wordClasses) && wordData.wordClasses.length > 0) {
+    wordClassEl.innerHTML = formatWordClasses(wordData.wordClasses);
+  } else if (wordData.wordClass) {
     wordClassEl.textContent = wordData.wordClass;
   } else {
     wordClassEl.style.display = 'none';
@@ -78,7 +82,10 @@ function createWordCard(wordData) {
     dateEl.style.display = 'none';
   }
   
-  if (wordData.meaning) {
+  // Handle meanings (both new array format and legacy single string format)
+  if (wordData.meanings && Array.isArray(wordData.meanings) && wordData.meanings.length > 0) {
+    meaningEl.innerHTML = formatMeanings(wordData.meanings);
+  } else if (wordData.meaning) {
     meaningEl.textContent = wordData.meaning;
   } else {
     meaningEl.textContent = 'Significado não disponível.';
@@ -87,8 +94,19 @@ function createWordCard(wordData) {
   if (wordData.etymology) {
     etymologyEl.textContent = wordData.etymology;
   } else {
-    etymologyEl.closest('.etymology-container').style.display = 'none';
+    etymologyContainer.style.display = 'none';
   }
+  
+  // Create scrollable container and move meaning and etymology inside it
+  const scrollableContent = document.createElement('div');
+  scrollableContent.className = 'scrollable-content';
+  
+  // Insert the scrollable container after the word heading
+  backWord.parentNode.insertBefore(scrollableContent, meaningEl);
+  
+  // Move meaning and etymology container into the scrollable content
+  scrollableContent.appendChild(meaningEl);
+  scrollableContent.appendChild(etymologyContainer);
   
   if (wordData.link) {
     dictionaryLink.href = wordData.link;
@@ -102,6 +120,48 @@ function createWordCard(wordData) {
   });
   
   return wordEl;
+}
+
+/**
+ * Format word classes as a comma-separated list
+ */
+function formatWordClasses(wordClasses) {
+  return wordClasses.join(' e ');
+}
+
+/**
+ * Format meanings as a structured list grouped by word class
+ */
+function formatMeanings(meanings) {
+  // Group meanings by word class
+  const meaningsByClass = {};
+  
+  meanings.forEach(meaning => {
+    const wordClass = meaning.wordClass || 'Outro';
+    if (!meaningsByClass[wordClass]) {
+      meaningsByClass[wordClass] = [];
+    }
+    meaningsByClass[wordClass].push(meaning);
+  });
+  
+  // Generate HTML
+  let html = '';
+  
+  for (const wordClass in meaningsByClass) {
+    // Add word class header if we have more than one class
+    if (Object.keys(meaningsByClass).length > 1) {
+      html += `<div class="meaning-class">${wordClass}</div>`;
+    }
+    
+    // Add meaning items
+    html += '<ul class="meaning-list">';
+    meaningsByClass[wordClass].forEach(meaning => {
+      html += `<li><span class="meaning-number">${meaning.number || ''}</span> ${meaning.text}</li>`;
+    });
+    html += '</ul>';
+  }
+  
+  return html;
 }
 
 function setupSubscriptionForm() {

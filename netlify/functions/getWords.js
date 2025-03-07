@@ -55,11 +55,42 @@ exports.handler = async function(event, context) {
         // Extract pronunciation and syllables
         const syllables = $('.dp-divisao-silabica .titpalavra').text().trim();
         
-        // Extract word class (adjective, noun, etc)
-        const wordClass = $('.--pequeno').first().text().trim();
+        // Extract all word classes
+        const wordClasses = [];
+        $('.--pequeno').each(function() {
+          const classText = $(this).text().trim();
+          // Only include elements that have class descriptions (filter out empty or non-class elements)
+          if (classText && !classText.startsWith('1.') && !classText.startsWith('2.')) {
+            wordClasses.push(classText);
+          }
+        });
         
-        // Extract meaning
-        const meaning = $('.dp-definicao-linha .p').first().text().trim();
+        // Extract all meanings with their corresponding numbers and classes
+        const meanings = [];
+        let currentClass = '';
+        
+        $('.--pequeno, .dp-definicao-linha').each(function() {
+          const element = $(this);
+          
+          // If this is a class header, update the current class
+          if (element.hasClass('--pequeno') && !element.text().trim().startsWith('1.') && !element.text().trim().startsWith('2.')) {
+            currentClass = element.text().trim();
+          }
+          
+          // If this is a definition line, extract the meaning
+          if (element.hasClass('dp-definicao-linha')) {
+            const numberEl = element.find('.h6.--pequeno').text().trim();
+            const textEl = element.find('.p').text().trim();
+            
+            if (textEl) {
+              meanings.push({
+                number: numberEl,
+                text: textEl,
+                wordClass: currentClass
+              });
+            }
+          }
+        });
         
         // Extract etymology
         const etymology = $('.dp-seccao-icon .def.p').first().text().trim();
@@ -69,8 +100,8 @@ exports.handler = async function(event, context) {
           link,
           date,
           syllables,
-          wordClass,
-          meaning,
+          wordClasses,
+          meanings,
           etymology,
           fullDescription: description
         });

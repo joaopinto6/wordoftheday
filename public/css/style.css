@@ -136,6 +136,34 @@ main {
   text-align: left;
 }
 
+/* Combined scrollable container for meaning and etymology */
+.scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 150px;
+  padding-right: 5px;
+  margin-bottom: 15px;
+}
+
+/* Scrollbar styling for scrollable content */
+.scrollable-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .word-card h2 {
   font-size: 2rem;
   color: var(--secondary-color);
@@ -172,8 +200,38 @@ main {
 }
 
 .word-card .meaning {
-  flex-grow: 1;
   margin-bottom: 15px;
+  /* Remove scrolling from here as it's now in the parent container */
+}
+
+/* Styles for meaning classes */
+.meaning-class {
+  font-style: italic;
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 2px;
+}
+
+/* Styles for meaning lists */
+.meaning-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 8px;
+}
+
+.meaning-list li {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* Style for meaning numbers */
+.meaning-number {
+  color: var(--secondary-color);
+  font-weight: 500;
+  margin-right: 4px;
 }
 
 .etymology-container {
@@ -194,7 +252,7 @@ main {
 
 .dictionary-link {
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 0px;
   color: var(--primary-color);
   font-weight: 500;
 }
@@ -371,5 +429,13 @@ footer {
   .subscription-form-container {
     width: 90vw;
     max-width: 320px;
+  }
+  
+  .word-card .meaning {
+    max-height: none;
+  }
+  
+  .scrollable-content {
+    max-height: 120px;
   }
 }
