@@ -446,3 +446,10 @@ body.blurred footer {
   filter: blur(6px);
   transition: filter var(--transition-speed);
 }
+
+body header,
+body main,
+body footer {
+  filter: none;
+  transition: filter var(--transition-speed);
+}
