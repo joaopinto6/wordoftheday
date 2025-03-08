@@ -46,8 +46,6 @@ exports.handler = async function(event, context) {
       if (description) {
         // Decode HTML entities before parsing
         const decodedDescription = decodeHTMLEntities(description);
-        console.log(decodedDescription);
-        console.log("-------------------------------------------------")
         
         // Parse the decoded HTML
         const $ = cheerio.load(decodedDescription);
